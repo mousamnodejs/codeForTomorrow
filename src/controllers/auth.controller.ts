@@ -37,7 +37,7 @@ const jwtSecret = process.env.JWT_SECRET
     }
 };
 
-export const authLogin = async (req: Request, res: Response): Promise<void> => {
+ const authLogin = async (req: Request, res: Response): Promise<void> => {
     try {
       const { email, password } = req.body;
   

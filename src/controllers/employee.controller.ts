@@ -6,7 +6,7 @@ import pagination from '../helper/pagination'; // Importing pagination helper
 const prisma = new PrismaClient();
 
 // Create employee
- // Create Employee Function
+
 const createEmployee = async (req: Request, res: Response): Promise<void> => {
     try {
       // Creating the employee in the database

@@ -1,0 +1,98 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+  
+  //   user model
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  fullName  String
+  role      Role     @default(HR) // Default changed to HR
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  HR
+  ADMIN
+}
+
+//  model Employee
+
+model Employee {
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  dob         DateTime
+  joinDate    DateTime @default(now())
+  basicSalary Float
+  hra         Float    @default(0)
+  allowances  Float    @default(0)
+  taxSlab     String   @default("SLAB_1")
+  deductions  Float    @default(0)
+  attendance  Attendance[]
+  salaries    Salary[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+//  model Attendance
+model Attendance {
+  id          Int      @id @default(autoincrement())
+  employeeId  Int
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  date        DateTime
+  checkIn     String
+  checkOut    String?
+  hoursWorked Float?
+  status      AttendanceStatus @default(PRESENT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([employeeId, date])
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  HALF_DAY
+  LEAVE
+}
+
+//
+
+model Salary {
+  id          Int      @id @default(autoincrement())
+  employeeId  Int
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  month       String
+  basicSalary Float
+  hra         Float
+  allowances  Float
+  tax         Float
+  pf          Float
+  deductions  Float
+  totalDays   Int
+  fullDays    Int
+  halfDays    Int
+  grossSalary Float
+  netSalary   Float
+  status      SalaryStatus @default(PENDING)
+  paidDate    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([employeeId, month])
+}
+
+enum SalaryStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
